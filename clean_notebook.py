@@ -1,22 +1,29 @@
 import nbformat
 
-notebook_path = "Copie_de_distilbert_fine_tune2.ipynb"
-clean_path = "Copie_de_distilbert_fine_tune2_GitHub.ipynb"
+# Nom du notebook à nettoyer
+input_nb = "Copie_de_distilbert_fine_tune2_GitHub.ipynb"
+output_nb = "Copie_de_distilbert_fine_tune2_GitHub.ipynb"
 
 # Charger le notebook
-with open(notebook_path, "r", encoding="utf-8") as f:
+with open(input_nb, "r", encoding="utf-8") as f:
     nb = nbformat.read(f, as_version=4)
 
-# Supprimer tous les widgets et métadonnées inutiles
+# Supprimer les widgets et nettoyer les outputs
+if "widgets" in nb.metadata:
+    del nb.metadata["widgets"]
+
 for cell in nb.cells:
-    if hasattr(cell, "metadata"):
+    if "outputs" in cell:
+        # Garder les outputs pour qu’ils soient visibles
+        cell.outputs = cell.outputs
+    if "execution_count" in cell:
+        cell.execution_count = cell.execution_count
+    if "metadata" in cell:
+        # Supprimer seulement les parties problématiques des métadonnées
         cell.metadata.pop("widgets", None)
-        # Supprime d'autres metadata qui posent problème
-        cell.metadata.pop("tags", None)
-        cell.metadata.pop("execution", None)
 
 # Sauvegarder le notebook nettoyé
-with open(clean_path, "w", encoding="utf-8") as f:
+with open(output_nb, "w", encoding="utf-8") as f:
     nbformat.write(nb, f)
 
-print(f"✅ Notebook prêt pour GitHub : {clean_path}")
+print(f"✅ Notebook nettoyé et compatible GitHub : {output_nb}")
