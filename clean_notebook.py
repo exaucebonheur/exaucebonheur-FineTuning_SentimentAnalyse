@@ -1,17 +1,19 @@
 import nbformat
 
-# Chemin du notebook original
 notebook_path = "Copie_de_distilbert_fine_tune2.ipynb"
-# Chemin du notebook nettoyé pour GitHub
 clean_path = "Copie_de_distilbert_fine_tune2_GitHub.ipynb"
 
+# Charger le notebook
 with open(notebook_path, "r", encoding="utf-8") as f:
     nb = nbformat.read(f, as_version=4)
 
-# Supprimer les widgets
+# Supprimer tous les widgets et métadonnées inutiles
 for cell in nb.cells:
-    if "metadata" in cell and "widgets" in cell.metadata:
-        del cell.metadata["widgets"]
+    if hasattr(cell, "metadata"):
+        cell.metadata.pop("widgets", None)
+        # Supprime d'autres metadata qui posent problème
+        cell.metadata.pop("tags", None)
+        cell.metadata.pop("execution", None)
 
 # Sauvegarder le notebook nettoyé
 with open(clean_path, "w", encoding="utf-8") as f:
